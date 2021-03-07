@@ -1,0 +1,38 @@
+Script started on Fri 10 Jan 2020 02:29:24 PM EST
+]0;bryant_gw@cobra:~/csc205[?1034h[bryant_gw@cobra csc205]$ cat java[K[K[K[KProg1.java
+
+import java.util.*;
+
+//  Lab program 1
+//  This program reads integers and stops when 0 is read.
+//  It will print the product of all the integers before the 0.
+
+//  The program contains no error handling.
+
+public class Prog1 
+{
+	public static void main (String[] args)
+	{
+   		int Product = 1;
+   		int value;
+                Scanner stdin = new Scanner(System.in);
+		value = stdin.nextInt();
+
+   		while (value != 0)
+   		{
+      			Product *= value;
+		        value = stdin.nextInt();
+   		}
+
+   		System.out.println("The product is "  + Product);
+
+		System.exit(0);
+	}
+}
+]0;bryant_gw@cobra:~/csc205[bryant_gw@cobra csc205]$ javac Prog1.java
+]0;bryant_gw@cobra:~/csc205[bryant_gw@cobra csc205]$ java Prog1 < data1.dat
+The product is -3628800
+]0;bryant_gw@cobra:~/csc205[bryant_gw@cobra csc205]$ exit
+exit
+
+Script done on Fri 10 Jan 2020 02:30:07 PM EST
