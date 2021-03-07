@@ -1,0 +1,60 @@
+The purpose of this project is to create a program to store wage information for employees of a company using an arraylist of employee objects. In the proram the user will be able to add new employees, compute paychecks, raise wages, download employee data, and upload employee data.
+
+There are several classes in this program, and they are listed below.
+
+Employee class:
+	The employee class is an abstract class that will be inherited by the two types of employees, hourly and salaried. It contains the private variables for name and wage used in all employee subclasses as well as basic methods needed in all employee classes. Has aprotected constructor 
+
+	employee methods:
+	abstract method computePay(): does nothing here but is implemented in subclasses
+
+	getters and setters for wage and name: methods to get and set global variables
+
+	raiseWage(): method to raise the wage of an employee object by a certain perentage.
+
+Hourlyemployee class:
+	This is a subclass of the Employee class made for hourly workers its constructor callsthe super method.
+
+	HourlyEmployee methods:
+
+	computePay(): computes pay based on hours worked, includes case for overtime
+
+	pad(): pads string to be n-characters long used with toString.
+
+	toDollars(): puts wage in dollar format
+
+	toString(): returns string containing all data stored in object.
+
+SalariedEmployee class:  
+	This is a subclass of the employee class for salaried employees.
+
+	SalariedEmployee methods:
+
+	computPay(): computes pay based on salary assuming 40 hours worked a week, no overtime.
+	
+	getSalary()/setSalary(): methods to get/set salary variable
+
+	pad(): same as hourlyEmployee method
+
+	toDollars(): same as hourlyEmployee method  
+
+	toString(): returns string w/ all object data.
+
+Personnel class:
+	this class is used to create the arraylist of employee objects and mutate it.
+
+	Personnel methods:
+
+	main(): calls menu() which stars program.
+
+	menu(): controls operations of program by allowing user to input command, also allows user yo exit program.
+
+	addEmployee(): adds either hourly or salaried employee to employees arraylist.
+	
+	computePaychecks(): computes paychecks of employees stores in arraylist.
+
+	raiseWages(): raises wages of employees in arraylist.
+
+	downloadData(): downloads employee data into arraylst from outside file that is in binary format.
+
+	uploadData(): uploads employee data from arraylist to outside file in binary format.

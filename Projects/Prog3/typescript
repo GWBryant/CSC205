@@ -1,0 +1,529 @@
+Script started on Sun 29 Mar 2020 06:08:49 PM EDT
+]0;bryant_gw@cobra:~/csc205/Projects/Prog3[?1034h[bryant_gw@cobra Prog3]$ ls'[K
+Employee.class  Employee.java  Employees.dat  HourlyEmployee.class  HourlyEmployee.java  [0m[01;34mjpb[0m  Personnel.class  Personnel.java  README  SalariedEmployee.class  SalariedEmployee.java  typescript  [01;34mUtils[0m
+]0;bryant_gw@cobra:~/csc205/Projects/Prog3[bryant_gw@cobra Prog3]$ cat Personnel.java
+import java.util.*;
+import java.io.*;
+import java.text.*;
+
+public class Personnel implements Serializable
+{
+	//create private variables for use throughout file.
+	private static Scanner in = new Scanner(System.in);
+	private static List<Employee> employees = new ArrayList<Employee>();
+	private static Format format = new DecimalFormat("############.##");
+
+	//main method calls menu which runs program
+	public static void main(String[] args)
+	{
+		menu();
+	}
+
+	//menu method to display menu and handle method calls for different commands
+	// calls menu again after command finishes
+	public static void menu()
+	{
+		String choice;
+		String name;
+		System.out.println("---------------------------------");
+		System.out.println("|Commands: n - New employee     |");
+		System.out.println("|          c - Compute paychecks|");
+		System.out.println("|          r - Raise wages      |");
+		System.out.println("|          p - Print records    |");
+		System.out.println("|          d - Download data    |");
+		System.out.println("|          u - Upload date      |");
+		System.out.println("|          q - Quit             |");
+		System.out.println("---------------------------------");
+		System.out.print("Enter command: ");
+		try
+		{
+			choice = in.nextLine();
+			if(choice.equalsIgnoreCase("n"))
+			{
+				System.out.print("Enter name of new employee: ");
+				name = in.nextLine();
+				addEmployee(name);
+				in.nextLine();
+				menu();
+			}
+			else if(choice.equalsIgnoreCase("c"))
+			{
+				computePaychecks();
+				in.nextLine();
+				menu();
+				
+			}
+			else if(choice.equalsIgnoreCase("r"))
+			{
+				raiseWages();
+				in.nextLine();
+				menu();
+			}
+			else if(choice.equalsIgnoreCase("p"))
+			{
+				System.out.println("Printing Records");
+				System.out.println("------------------------------------");
+				for(int i = 0; i < employees.size(); i++)
+				{
+					System.out.println(employees.get(i).toString());
+				}
+				menu();
+			}
+			else if(choice.equalsIgnoreCase("d"))
+			{
+				downloadData();
+				menu();
+			}
+			else if(choice.equalsIgnoreCase("u"))
+			{
+				uploadData();
+				menu();
+			}
+			else if(choice.equalsIgnoreCase("q"))
+			{
+				System.out.println("Thank you. Goodbye!");
+			}
+			else
+			{
+				System.err.print("Command was not recognized; please try again.");
+				in.nextLine();
+				menu();			
+			}
+		}
+		catch (InputMismatchException e)
+		{
+			System.err.println("Invalid input please try again");
+			in.nextLine();
+			menu();
+		}
+	}
+
+	//method to add a new employee that is either salaried or hourly
+	public static void addEmployee(String name)
+	{
+		try {
+			double wage, salary;
+			String type;
+			Employee hEmp;
+			Employee sEmp;
+			System.out.print("Hourly (h) or Salaried (s): ");
+			type = in.nextLine();
+			switch (type) {
+				case "h":
+				case "H":
+					System.out.print("Enter hourly wage: ");
+					wage = in.nextDouble();
+					hEmp = new HourlyEmployee(name,wage);
+					employees.add(hEmp);
+					break;
+				case "s":
+				case "S":
+					System.out.print("Enter yearly salary: ");
+					salary = in.nextDouble();
+					sEmp = new SalariedEmployee(name,salary);
+					employees.add(sEmp);
+					break;
+				default:
+					System.err.print("Input was not h or s; please try again.");
+					in.nextLine();
+					addEmployee(name);
+			}
+		}
+		catch(InputMismatchException e)
+		{
+			System.err.println("Input was not h or s; please try again.");
+			in.nextLine();
+			addEmployee(name);
+		}
+	}
+
+	//method to compute paychecks for all employees on record based on wages
+	public static void computePaychecks()
+	{
+		double hours;
+		try {
+			for (int i = 0; i < employees.size(); i++) {
+				System.out.print("Enter number of hours worked by " + employees.get(i).getName() + ": ");
+				hours = in.nextDouble();
+				System.out.println("Pay: $" + format.format(employees.get(i).computePay(hours)));
+			}
+		}
+		catch (InputMismatchException e)
+		{
+			System.err.print("Invalid input, please try again.");
+			in.nextLine();
+			computePaychecks();
+		}
+	}
+
+	//method to raise wages of all employees on record
+	public static void raiseWages()
+	{
+		try {
+			double percent;
+			System.out.print("Enter Percentage increase: ");
+			percent = in.nextDouble();
+			for (int i = 0; i < employees.size(); i++) {
+				employees.get(i).raiseWage(percent);
+			}
+			System.out.println("New Wages");
+			System.out.println("------------------------------------");
+			for (int i = 0; i < employees.size(); i++) {
+				System.out.println(employees.get(i).toString());
+			}
+		}
+		catch (InputMismatchException e)
+		{
+			System.err.print("Invalid input, please try again.");
+			in.nextLine();
+			raiseWages();
+		}
+	}
+
+	//method to download data from Employees.dat file in directory
+	public static void downloadData()
+	{
+		try
+		{
+			String fileName = "Employees.dat";
+			FileInputStream fileIn = new FileInputStream(fileName);
+			ObjectInputStream inp = new ObjectInputStream(fileIn);
+			employees = (List<Employee>) inp.readObject();
+			inp.close();
+		}
+		catch (IOException e)
+		{
+			System.err.println(e.getMessage() + " Please try again.");
+			in.nextLine();
+			downloadData();
+		}
+		catch (ClassNotFoundException e)
+		{
+			System.err.println(e.getMessage() + " Please try again.");
+			in.nextLine();
+			downloadData();
+		}
+		System.out.println("Download complete!");
+		System.out.println("Data downloaded: ");
+		System.out.println("------------------------------------");
+		for(int i = 0; i < employees.size(); i++)
+		{
+			System.out.println(employees.get(i).toString());
+		}
+	}
+
+	//method to upload data from program to Employees.dat file
+	public static void uploadData()
+	{
+		try
+		{
+			String fileName = "Employees.dat";
+			FileOutputStream fileOut = new FileOutputStream(fileName);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(employees);
+			out.close();
+		}
+		catch (IOException e)
+		{
+			System.err.println(e.getMessage() + "Please try again.");
+			in.nextLine();
+			uploadData();
+		}
+		System.out.println("Upload complete!");
+	}
+}
+]0;bryant_gw@cobra:~/csc205/Projects/Prog3[bryant_gw@cobra Prog3]$ cat Employee.java
+import java.util.*;
+import java.io.*;
+
+public abstract class Employee implements Serializable{
+	//initialize private global variables for name and wage
+	private String name;
+	private double wage;
+
+	//protected constructor
+	protected Employee(String n, double w)
+	{
+		name = n;
+		wage = w;
+	}
+
+	//abstract method to compute pay
+	public abstract double computePay(double hoursWorked);
+
+	//getter and setter for name
+	public void setName(String n)
+	{
+		name = n;
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
+
+	//getter and setter for wage
+	public void setWage(double w)
+	{
+		wage = w;
+	}
+
+	public double getWage()
+	{
+		return wage;
+	}
+
+	//method to raise wage by a percentage
+	public void raiseWage(double percent)
+	{
+		setWage(getWage() + (getWage() * (percent / 100)));
+	}
+}
+]0;bryant_gw@cobra:~/csc205/Projects/Prog3[bryant_gw@cobra Prog3]$ cat HourlyEmployee.java
+import java.util.*;
+import java.io.*;
+
+public class HourlyEmployee extends Employee implements Serializable
+{
+
+	//constructor for hourly employee, calls super for employee class
+	public HourlyEmployee(String name, double wage)
+	{
+		super(name,wage);
+	}
+
+	//implementation of abstract compute pay class
+	public double computePay(double hoursWorked)
+	{
+		if(hoursWorked <= 40)
+			return hoursWorked*getWage();
+		else
+			return 40*getWage() + (hoursWorked-40)*getWage()*1.5;
+	}
+
+	//method to pad toString to be exactly n characters long
+	public static String pad(String str, int n)
+	{
+		if(str.length() > n)
+			return str.substring(0,n);
+		while(str.length() < n)
+			str += " ";
+		return str;
+	}
+
+	//Puts wage in dollar format
+	public static String toDollars(double amount)
+	{
+		long roundedAmount = Math.round(amount * 100);
+		long dollars = roundedAmount / 100;
+		long cents = roundedAmount % 100;
+		if (cents <= 9)
+			return dollars + ".0" + cents;
+		else
+			return dollars + "." + cents;
+	}
+
+
+	public String toString()
+	{
+		String dolls = toDollars(getWage());
+		return pad(getName(),40-(dolls+"/hour$").length()) + "$" + dolls + "/hour";
+	}
+}
+
+]0;bryant_gw@cobra:~/csc205/Projects/Prog3[bryant_gw@cobra Prog3]$ cat SalariedEmployee.java
+import java.util.*;
+import java.io.*;
+
+public class SalariedEmployee extends Employee implements Serializable
+{
+	//constructor for salaried employee object
+	public SalariedEmployee(String Name, double Salary)
+	{
+		super(Name, (Salary/(40*52)));
+	}
+
+	//implementation of abstract computePay method
+	public double computePay(double hoursWorked)
+	{
+		return 40 * getWage();
+	}
+
+	//method to get salary
+	public double getSalary()
+	{
+		return getWage()*40*52;	
+	}
+
+	//method to set salary
+	public void setSalary(double salary)
+	{
+		setWage(salary/(40*52));
+	}
+
+	//method to pad toString to be 40 characters long
+	public static String pad(String str, int n)
+	{
+		if(str.length() > n)
+			return str.substring(0,n);
+		while(str.length() < n)
+			str += " ";
+		return str;
+	}
+
+	//method to put salary in dollar format
+	public static String toDollars(double amount)
+	{
+		long roundedAmount = Math.round(amount * 100);
+		long dollars = roundedAmount / 100;
+		long cents = roundedAmount % 100;
+		if (cents <= 9)
+			return dollars + ".0" + cents;
+		else
+			return dollars + "." + cents;
+	}
+
+	//method to return string with object info that's 40 characters long
+	public String toString()
+	{
+		String dolls = toDollars(getSalary());
+		return pad(getName(),40-(dolls+"/year$").length()) + "$" +dolls + "/year";
+	}
+}
+]0;bryant_gw@cobra:~/csc205/Projects/Prog3[bryant_gw@cobra Prog3]$ java Personnel
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: n
+Enter name of new employee: Newmark, Bobby
+Hourly (h) or Salaried (s): h
+Enter hourly wage: 20
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: n
+Enter name of new employee: Case, Henry
+Hourly (h) or Salaried (s): s
+Enter yearly salary: 90000
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: c
+Enter number of hours worked by Newmark, Bobby: 50
+Pay: $1100
+Enter number of hours worked by Case, Henry: 40  45
+Pay: $1730.77
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: r
+Enter Percentage increase: 10
+New Wages
+------------------------------------
+Newmark, Bobby               $22.00/hour
+Case, Henry               $99000.00/year
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: p
+Printing Records
+------------------------------------
+Newmark, Bobby               $22.00/hour
+Case, Henry               $99000.00/year
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: u
+Upload complete!
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: q
+Thank you. Goodbye!
+]0;bryant_gw@cobra:~/csc205/Projects/Prog3[bryant_gw@cobra Prog3]$ java Personnel
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: d
+Download complete!
+Data downloaded: 
+------------------------------------
+Newmark, Bobby               $22.00/hour
+Case, Henry               $99000.00/year
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: p
+Printing Records
+------------------------------------
+Newmark, Bobby               $22.00/hour
+Case, Henry               $99000.00/year
+---------------------------------
+|Commands: n - New employee     |
+|          c - Compute paychecks|
+|          r - Raise wages      |
+|          p - Print records    |
+|          d - Download data    |
+|          u - Upload date      |
+|          q - Quit             |
+---------------------------------
+Enter command: q
+Thank you. Goodbye!
+]0;bryant_gw@cobra:~/csc205/Projects/Prog3[bryant_gw@cobra Prog3]$ exit
+exit
+
+Script done on Sun 29 Mar 2020 06:12:45 PM EDT

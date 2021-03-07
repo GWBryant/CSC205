@@ -1,0 +1,51 @@
+The goal of this project is to create a library search program using selection sorts and binary search algorithms. The program should allow a user to determine whether a particular book is found in a
+library's computerized database. If the book is found the books information will be provided and if they are not the program will inform the user of this. The Program will search the books by title.
+
+The user will be able to display all books in the library, search for a book, or exit the program in the main menu.
+If the user inputs a 1 then all of the books on record are displayed.
+If the User inputs a 2 then they are able to search for a book by title.
+If the user inputs a 3 then they exit the program.
+
+If the user is searching for a book and they input the title "Tom Sawyer" the output will resemble this:
+Title:	Tom Sawyer
+Author's Name: 	Twain, Mark
+Copywright: 	1972
+Price:		8.5
+Genre: 		f
+
+The sorting method used is a selection sort which sorts an array by selecting the first element of an array and swapping it with the lowest item in teh array and so on until the array is sorted
+for example given the array int[] nums = {2,5,3,7,4}; the sort would go as follows:
+{2,5,3,7,4} => {2,5,3,7,4} => {2,3,5,7,4} => {2,3,4,7,5} => {2,3,4,5,7} => {2,3,4,5,7}
+
+A binary search searches through a sorted array by comparing the key with the middle index of an array and then narrowing the search to the half the key is in and repeating until the key iss found.
+given the array used previously the search would go as follows:
+key = 5
+f | m | l
+---------
+0 | 2 | 4
+2 | 3 | 4  found at index m = 3
+
+The program is input a list of books and thier information that is deliminated by the ";" character and it outputs LibraryBook objects that are generated from this input.
+
+Methods:
+
+getData():
+Inputs data file and inserts each book into arrayList of library books.
+
+inputBooks():
+called by get data to put books into arraylist.
+
+sortLibrary():
+Sorts books by title using .equals and a select sort, temp for swapping must be library book object.
+
+searchLibrary():
+search method that finds a library book given a title using a binary search. this method also handles errors for title noy being found.
+
+menu():
+displays menu and keeps program running until the user decides to exit the program.
+
+clearScreen():
+clears the screen.
+
+printRecord():
+prints record of Library book object.

@@ -1,0 +1,93 @@
+The problem introduced in this project was to use loops, external file i/o, random numbers, and methods with array parameters to create a working Bingo game.
+
+The numbers on the Bingo card were read into the program from a file in row major order. The input file appeared as follows:
+12
+28
+31
+49
+66
+3
+26
+45
+53
+75
+10
+17
+33
+59
+67
+7
+19
+42
+55
+74
+2
+23
+37
+46
+70
+
+The correct output on screen would appear similar to this:
+
+YOUR BINGO CARD :
+
+B    I    N    G    O
+--------------------------
+| 12 | 28 | 31 | 49 | 66 |
+--------------------------
+|  3 | 26 | 45 | 53 | 75 |
+--------------------------
+| 10 | 17 | 33 | 59 | 67 |
+--------------------------
+|  7 | 19 | 42 | 55 | 74 |
+--------------------------
+|  2 | 23 | 37 | 46 | 70 |
+--------------------------
+BINGO NUMBERS PICKED AT RANDOM FROM BIN :
+68      18      75      10      41      9       71      57      35
+20      46      43      14      32      51      36      26      66
+62      28      67      65      24      59      58      23      17
+54      22      29      7       12      37      4       56      19
+YOU WIN WITH A VERTICAL BINGO AFTER 36 PICKS!
+
+YOUR BINGO CARD :
+B    I    N    G    O
+--------------------------
+|  X |  X | 31 | 49 |  X |
+--------------------------
+|  3 |  X | 45 | 53 |  X |
+--------------------------
+|  X |  X | 33 |  X |  X |
+--------------------------
+|  X |  X | 42 | 55 | 74 |
+--------------------------
+|  2 |  X |  X |  X | 70 |
+--------------------------
+
+Methods:
+
+fillCard()
+This methods uses java.io to read the set of numbers from a file and fill them into an array called card. This is done by using the Scanner class and nested   for loop to put all 25 elements of the array into their correct position on the card.
+
+printCard()
+This method uses a nested for loop to print the card. It is written to format the card into a 5x5 grid with a number in each space and the word BINGO at the   top where each letter sits directly above one column. It also prints zeroes as X's to indicate that they are points where that value has been picked by the random number picker.
+
+numPicker()
+This method picks a random number from 1-75 and then sets a BitSet value corresponding to that number to true to make sure it isnt picked again in subsequent  calls of the method. The method is written so that after a number is picked it checks to see if the number has already been picked and if it has then another  number is chosen. a while loop is used to make sure that the methods runs until an unpicked number is picked. This method also prints picked numbers.
+
+checkForWin()
+This method checks to see if the player has won the game. It does this by seeing if a given row, column, or diagonal segment of the bingo card sums to zero.   This is because as per the playGame method below when the numPicker picks a number the value of that number in the card array is set to zero, therefore when   all values in a row, column or horizontal segment are picked the sum of that section will be zero. The method also uses boolean values to see if the win is    horizontal, vertical or diagonal.
+
+playGame()
+This method runs the game by printing the card, and then continually picking numbers as long as the boolean value "win" is false (uses while loop) the win     condition is checked by calling checkForWin() in this methood. This method also sets picked numbers to zero within that while loop. Once the game is won this  method prints the winning card and tells you how many picks it took as wellas how the game was won (horizontal, vertical, or diagonal).  
+
+
+
+
+
+
+
+
+
+
+
